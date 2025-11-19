@@ -1038,49 +1038,45 @@
         const formMessage = document.getElementById('form-message');
         const submitButton = document.getElementById('submitForm');
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
+        if (form) {
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                e.stopPropagation();
 
-            // Validar checkbox de privacidad
-            const avisoCheckbox = document.getElementById('aviso');
-            if (!avisoCheckbox.checked) {
-                formMessage.style.display = 'block';
-                formMessage.className = 'alert alert-warning';
-                formMessage.textContent = 'Debes aceptar las Políticas de Privacidad';
-                return;
-            }
-
-            // Deshabilitar botón y mostrar mensaje de envío
-            submitButton.disabled = true;
-            submitButton.textContent = 'Enviando...';
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: new FormData(form)
-            })
-                .then(response => response.text())
-                .then(data => {
+                // Validar checkbox de privacidad
+                const avisoCheckbox = document.getElementById('aviso');
+                if (!avisoCheckbox || !avisoCheckbox.checked) {
                     formMessage.style.display = 'block';
-                    formMessage.className = 'alert alert-success';
-                    formMessage.textContent = 'Información enviada correctamente. Un asesor se pondrá en contacto contigo pronto.';
-                    form.reset();
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Enviar mensaje';
+                    formMessage.className = 'alert alert-warning';
+                    formMessage.textContent = 'Debes aceptar las Políticas de Privacidad';
+                    return false;
+                }
 
-                    // Ocultar mensaje después de 5 segundos
-                    setTimeout(() => {
-                        formMessage.style.display = 'none';
-                    }, 5000);
+                // Deshabilitar botón y mostrar mensaje de envío
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: new FormData(form)
                 })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    formMessage.style.display = 'block';
-                    formMessage.className = 'alert alert-danger';
-                    formMessage.textContent = 'Hubo un error al enviar la información. Por favor, intenta nuevamente.';
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Enviar mensaje';
-                });
-        });
+                    .then(response => response.text())
+                    .then(data => {
+                        // Redirigir a la página de agradecimiento
+                        window.location.href = 'https://www.javer.com.mx/gracias';
+                    })
+                    .catch(error => {
+                        console.error('Error!', error.message);
+                        formMessage.style.display = 'block';
+                        formMessage.className = 'alert alert-danger';
+                        formMessage.textContent = 'Hubo un error al enviar la información. Por favor, intenta nuevamente.';
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Enviar mensaje';
+                    });
+
+                return false;
+            });
+        }
     </script>
 
     <!-- Scripts de reCAPTCHA comentados
