@@ -950,7 +950,7 @@
                                 </div>
                                 -->
                                 <div class="col-12"><button class="btn btn-solid button" id="submitForm"
-                                        type="submit">Enviar mensaje</button></div>
+                                        type="button">Enviar mensaje</button></div>
                                 <div class="col-12 mt-3">
                                     <div id="form-message" style="display:none;" class="alert"></div>
                                 </div>
@@ -1039,19 +1039,28 @@
             const formMessage = document.getElementById('form-message');
             const submitButton = document.getElementById('submitForm');
 
-            if (form) {
+            if (form && submitButton) {
+                // Prevenir el submit tradicional del formulario
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
+                    return false;
+                });
 
+                // Manejar el click del botón
+                submitButton.addEventListener('click', function () {
                     // Validar checkbox de privacidad
                     const avisoCheckbox = document.getElementById('aviso');
                     if (!avisoCheckbox || !avisoCheckbox.checked) {
                         formMessage.style.display = 'block';
                         formMessage.className = 'alert alert-warning';
                         formMessage.textContent = 'Debes aceptar las Políticas de Privacidad';
-                        return false;
+                        return;
+                    }
+
+                    // Validar campos requeridos
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
                     }
 
                     // Deshabilitar botón y mostrar mensaje de envío
@@ -1064,6 +1073,7 @@
                     })
                         .then(response => response.text())
                         .then(data => {
+                            console.log('Success!', data);
                             // Redirigir a la página de agradecimiento
                             window.location.href = 'https://www.javer.com.mx/gracias';
                         })
@@ -1075,16 +1085,7 @@
                             submitButton.disabled = false;
                             submitButton.textContent = 'Enviar mensaje';
                         });
-
-                    return false;
-                }, true);
-
-                // También prevenir el submit desde el botón
-                if (submitButton) {
-                    submitButton.addEventListener('click', function (e) {
-                        e.preventDefault();
-                    });
-                }
+                });
             }
         });
     </script>
