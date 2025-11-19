@@ -879,7 +879,7 @@
                                 value="Landing_QuintanaRoo">
                         -->
                         <!-- Nuevo formulario que envía a Google Sheet -->
-                        <form id="form-landing-quintana" name="submit-to-google-sheet" onsubmit="return false;">
+                        <form id="form-landing-quintana" name="submit-to-google-sheet">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group mb-4"><label for="Nombre">Nombre</label> <input type="text"
@@ -1033,50 +1033,60 @@
 
     <!-- Script para enviar formulario a Google Sheet -->
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwU29kfe9a6mTJqw-pxMhQ8n1-1KNvQ2pSbOPcR5NdKZZMxcunBMJrAdKMGImiNoKa9Wg/exec';
-        const form = document.forms['submit-to-google-sheet'];
-        const formMessage = document.getElementById('form-message');
-        const submitButton = document.getElementById('submitForm');
+        document.addEventListener('DOMContentLoaded', function () {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwU29kfe9a6mTJqw-pxMhQ8n1-1KNvQ2pSbOPcR5NdKZZMxcunBMJrAdKMGImiNoKa9Wg/exec';
+            const form = document.getElementById('form-landing-quintana');
+            const formMessage = document.getElementById('form-message');
+            const submitButton = document.getElementById('submitForm');
 
-        if (form) {
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                e.stopPropagation();
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
 
-                // Validar checkbox de privacidad
-                const avisoCheckbox = document.getElementById('aviso');
-                if (!avisoCheckbox || !avisoCheckbox.checked) {
-                    formMessage.style.display = 'block';
-                    formMessage.className = 'alert alert-warning';
-                    formMessage.textContent = 'Debes aceptar las Políticas de Privacidad';
-                    return false;
-                }
-
-                // Deshabilitar botón y mostrar mensaje de envío
-                submitButton.disabled = true;
-                submitButton.textContent = 'Enviando...';
-
-                fetch(scriptURL, {
-                    method: 'POST',
-                    body: new FormData(form)
-                })
-                    .then(response => response.text())
-                    .then(data => {
-                        // Redirigir a la página de agradecimiento
-                        window.location.href = 'https://www.javer.com.mx/gracias';
-                    })
-                    .catch(error => {
-                        console.error('Error!', error.message);
+                    // Validar checkbox de privacidad
+                    const avisoCheckbox = document.getElementById('aviso');
+                    if (!avisoCheckbox || !avisoCheckbox.checked) {
                         formMessage.style.display = 'block';
-                        formMessage.className = 'alert alert-danger';
-                        formMessage.textContent = 'Hubo un error al enviar la información. Por favor, intenta nuevamente.';
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Enviar mensaje';
-                    });
+                        formMessage.className = 'alert alert-warning';
+                        formMessage.textContent = 'Debes aceptar las Políticas de Privacidad';
+                        return false;
+                    }
 
-                return false;
-            });
-        }
+                    // Deshabilitar botón y mostrar mensaje de envío
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Enviando...';
+
+                    fetch(scriptURL, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            // Redirigir a la página de agradecimiento
+                            window.location.href = 'https://www.javer.com.mx/gracias';
+                        })
+                        .catch(error => {
+                            console.error('Error!', error.message);
+                            formMessage.style.display = 'block';
+                            formMessage.className = 'alert alert-danger';
+                            formMessage.textContent = 'Hubo un error al enviar la información. Por favor, intenta nuevamente.';
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Enviar mensaje';
+                        });
+
+                    return false;
+                }, true);
+
+                // También prevenir el submit desde el botón
+                if (submitButton) {
+                    submitButton.addEventListener('click', function (e) {
+                        e.preventDefault();
+                    });
+                }
+            }
+        });
     </script>
 
     <!-- Scripts de reCAPTCHA comentados
