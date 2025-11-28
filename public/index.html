@@ -1067,7 +1067,7 @@
     <!-- Script para enviar formulario a Google Sheet -->
     <script>
         // Función para obtener gclid de la URL
-        function getGclidFromUrl() {
+        function getGclidFromUrl () {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('gclid') || '';
         }
