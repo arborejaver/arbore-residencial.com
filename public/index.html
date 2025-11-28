@@ -431,14 +431,47 @@
         }
     </style>
 
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TZ9T64V');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-38D897N597"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag () { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-38D897N597', {
+            debug_mode: true,
+            'linker': {
+                'domains': [
+                    'javer.com.mx',
+                    'arbore-residencial.com',
+                    'arborejaver.github.io'
+                ]
+            }
+        });
+    </script>
 
 </head>
 
 <body>
-    <!-- <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P68DJB7" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe>
-        </noscript> -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TZ9T64V" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!--[if lte IE 9]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+
     <div class="main-header">
         <div class="contw">
             <div class="logo">
@@ -1033,6 +1066,12 @@
 
     <!-- Script para enviar formulario a Google Sheet -->
     <script>
+        // Función para obtener gclid de la URL
+        function getGclidFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('gclid') || '';
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbwU29kfe9a6mTJqw-pxMhQ8n1-1KNvQ2pSbOPcR5NdKZZMxcunBMJrAdKMGImiNoKa9Wg/exec';
             const form = document.getElementById('form-landing-quintana');
@@ -1074,6 +1113,20 @@
                         .then(response => response.text())
                         .then(data => {
                             console.log('Success!', data);
+
+                            // ✅ EVENTO DE GOOGLE ANALYTICS - ARBORE
+                            console.log('🎯 Enviando evento a dataLayer: arbore_form_submit');
+                            window.dataLayer = window.dataLayer || [];
+                            window.dataLayer.push({
+                                event: 'arbore_form_submit',
+                                form_name: 'arbore_contacto_form',
+                                form_origen: 'form-landing-quintana',
+                                proyecto: 'ARBORE RESIDENCIAL',
+                                landing: 'Landing_Jalisco',
+                                gclid: getGclidFromUrl()
+                            });
+                            console.log('✅ Evento enviado a dataLayer');
+
                             // Redirigir a la página de agradecimiento
                             window.location.href = 'https://www.javer.com.mx/gracias';
                         })
